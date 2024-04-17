@@ -6,4 +6,6 @@ node_js:
 jobs:
   include:
     - if: type = push
-      script: npm exec -- bump deploy docs.yml
+      script: 
+        - npm install -g bump-cli
+        - bump deploy docs.yml --doc 273f54d0-b7ae-4ff0-a587-4bd899527bb8 --token $DOC_TOKEN
