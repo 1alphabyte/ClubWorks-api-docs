@@ -1,0 +1,99 @@
+openapi: 3.1.0
+info:
+  version: 0.1.0
+  title: ClubWorks Alpha API
+  description: The API that powers the backend for ClubWorks! (Alpha)
+
+servers:
+  - url: http://localhost:8080
+    description: Localhost on the default port
+
+components:
+  responses:
+    UnauthorizedError:
+      description: auth header is missing or invalid
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Auth failed, invalid token
+      status: 401
+  securitySchemes:
+    FBIDAuth:
+      type: apiKey
+      in: header
+      name: auth
+
+security:
+  - FBIDAuth: []
+
+paths:
+  /alpha/signup/{name}/:
+    post:
+      summary: Sign up a new user
+      requestBody:
+        required: true
+        content:
+          application/json:  # Assuming JSON request body
+            schema:
+              type: object
+              properties:
+                school_id:
+                  type: string
+                  description: The school ID of the user
+                grade:
+                  type: integer
+                  description: The grade of the user
+                  example: 11
+                year:
+                  type: integer
+                  description: The year that the user graduates
+                  example: 2026
+      responses:
+        '200':
+          description: User signed up successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  creation_date:
+                    type: string
+                    description: user creation date in UNIX milliseconds
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Failed to read from database
+        '409':
+          description: User already exists
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User already exists
+        '400':
+          description: Bad request (e.g., invalid name provided)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Invalid request body
+        '403':
+          $ref: '#/components/responses/UnauthorizedError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'

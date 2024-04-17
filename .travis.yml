@@ -1,0 +1,9 @@
+dist: jammy
+language: node_js
+node_js:
+  - 20
+
+jobs:
+  include:
+    - if: type = push
+      script: npm exec -- bump deploy docs.yml
